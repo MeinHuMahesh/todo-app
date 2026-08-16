@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4c1d95">
+    <title>Todo App</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="css/todo.css">
+</head>
+<body>
+    <a class="skip-link" href="#todo-list">Skip to tasks</a>
+    <div class="sync-banner" id="sync-banner" hidden></div>
+
+    <div class="todo-container">
+        <header class="todo-header">
+            <div class="user-row" id="user-row" hidden>
+                <span class="user-email" id="user-email"></span>
+                <button class="signout-btn" id="sign-out" aria-label="Sign out">Sign out</button>
+            </div>
+            <div class="header-top">
+                <div>
+                    <h1 class="todo-title">My Tasks</h1>
+                    <p class="todo-subtitle">Stay organized, get things done</p>
+                </div>
+                <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode" aria-pressed="true">☀️</button>
+            </div>
+        </header>
+
+        <div class="progress-wrap">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <span class="progress-text" id="progress-text">0%</span>
+        </div>
+
+        <div class="add-panel">
+            <div class="input-container">
+                <input class="todo-input" type="text" id="todo-name" placeholder="What needs to be done?" autocomplete="off" aria-label="New task">
+                <button onclick="addTodo()" class="add-btn" aria-label="Add task">Add</button>
+                <button id="toggle-options" class="options-btn" title="Task details" aria-label="Task details" aria-expanded="false">+</button>
+            </div>
+            <div class="options-row" id="options-row">
+                <div class="priority-picker" id="priority-picker" role="group" aria-label="Priority">
+                    <button class="prio-btn" data-priority="low" aria-pressed="false">Low</button>
+                    <button class="prio-btn active" data-priority="medium" aria-pressed="true">Medium</button>
+                    <button class="prio-btn" data-priority="high" aria-pressed="false">High</button>
+                </div>
+                <input type="date" id="due-date" class="date-input" title="Due date" aria-label="Due date">
+                <input type="text" id="tag-input" class="tag-input" list="tag-suggestions" placeholder="Tags (comma separated)" autocomplete="off" aria-label="Tags">
+                <datalist id="tag-suggestions"></datalist>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <input type="text" id="search-input" class="search-input" placeholder="Search tasks...  (press /)" autocomplete="off" aria-label="Search tasks">
+            <select id="sort-select" class="sort-select" title="Sort order" aria-label="Sort order">
+                <option value="manual">Manual</option>
+                <option value="due">Due date</option>
+                <option value="priority">Priority</option>
+                <option value="created">Newest</option>
+            </select>
+        </div>
+
+        <div class="filters" id="filters" role="group" aria-label="Filter tasks">
+            <button class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+            <button class="filter-btn" data-filter="active" aria-pressed="false">Active</button>
+            <button class="filter-btn" data-filter="completed" aria-pressed="false">Completed</button>
+            <button class="filter-btn" data-filter="today" aria-pressed="false">Today</button>
+            <button class="filter-btn" data-filter="overdue" aria-pressed="false">Overdue</button>
+        </div>
+
+        <div class="tag-filter-bar" id="tag-filter-bar" hidden>
+            <span>Filtering by tag:</span>
+            <span class="tag-chip filtered" id="tag-filter-name"></span>
+            <button class="tag-filter-clear" id="tag-filter-clear">Clear</button>
+        </div>
+
+        <div class="list-wrap">
+            <div class="loading" id="loading">Loading tasks...</div>
+            <ul class="todo-list" id="todo-list" aria-label="Task list"></ul>
+            <div class="empty-state" id="empty-state">
+                <span class="empty-icon" aria-hidden="true">&#10003;</span>
+                <p>Nothing here yet. Add a task above!</p>
+            </div>
+        </div>
+
+        <footer class="todo-footer">
+            <span id="items-left" aria-live="polite">0 items left</span>
+            <button class="clear-btn" id="clear-btn" aria-label="Clear completed tasks">Clear completed</button>
+        </footer>
+    </div>
+
+    <div class="toast-area" id="toast-area" aria-live="polite"></div>
+
+    <div class="auth-overlay" id="auth-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+        <div class="auth-card">
+            <h2 class="auth-title" id="auth-title">My Tasks</h2>
+            <p class="auth-subtitle" id="auth-subtitle">Sign in to sync your tasks across devices</p>
+            <form id="auth-form" class="auth-form">
+                <input type="email" id="auth-email" class="auth-input" placeholder="Email" autocomplete="email" aria-label="Email">
+                <input type="password" id="auth-password" class="auth-input" placeholder="Password" autocomplete="current-password" aria-label="Password">
+                <button type="submit" class="auth-btn" id="auth-submit">Sign in</button>
+            </form>
+            <button class="guest-btn" id="auth-guest">Continue as guest</button>
+            <p class="auth-error" id="auth-error"></p>
+            <p class="auth-switch">No account? <a href="#" id="auth-toggle">Create one</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Supabase SDK loader — tries the local copy first, then CDNs as fallback.
+        window.supabaseSDK = new Promise(resolve => {
+            const cdns = [
+                'js/supabase-sdk.js',
+                'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js',
+                'https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js'
+            ];
+            let i = 0;
+            const sdkReady = () => typeof supabase === 'object' && typeof supabase.createClient === 'function';
+            const tryNext = () => {
+                if (sdkReady()) { resolve(true); return; }
+                if (i >= cdns.length) { resolve(false); return; }
+                const s = document.createElement('script');
+                s.src = cdns[i++];
+                s.onload = () => {
+                    if (sdkReady()) resolve(true);
+                    else tryNext();
+                };
+                s.onerror = tryNext;
+                document.head.appendChild(s);
+            };
+            tryNext();
+        });
+    </script>
+    <script src="js/supabase.env.js"></script>
+    <script src="js/supabase.config.js"></script>
+    <script src="js/offline-store.js"></script>
+    <script src="js/todo.js"></script>
+</body>
+</html>
