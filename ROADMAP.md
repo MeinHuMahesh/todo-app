@@ -120,6 +120,17 @@ Builds on the Phase 1 UI.
 - **Performance**: removed `background-attachment: fixed` (iOS repaint bug), backdrop blur 20px → 12px on small screens, `render()` now builds a `DocumentFragment` + single `replaceChildren()` (one reflow instead of per-item appends)
 - SW version bumped to `todo-v3` to refresh cached assets
 
+**Follow-up fix (mobile QA):**
+- **Flex overflow bug fixed**: `.todo-input` was missing `min-width: 0`, so the Add/Options button row overflowed horizontally on phones (row measured 424px on a 375px viewport — the "mobile view breaking" report). Added `min-width: 0` to `.todo-input`; verified zero overflow at 320/375/768 with the CDP probe
+- **Favicon 404 fixed**: `<link rel="icon">` added to both HTML files (the 404 also polluted the console/PageSpeed error logs)
+- **Touch target fix**: desktop block no longer shrinks `.theme-btn` to 40px (stays 44px for tablets)
+- **Responsiveness contract test**: `test/test-phase6.js` — 37 static checks (viewport/safe-area meta, 16px base inputs vs iOS zoom, `min-width: 0` flex guards, ≥44px touch targets, zero unguarded `:hover` rules, `100dvh`, no `background-attachment: fixed`, `(pointer: coarse)` and `min-width: 768px` block contracts)
+- **`scripts/mobile-probe.js`**: headless Edge + CDP runtime probe that measures real overflow/touch-target/console-error state at any viewport (e.g. `node scripts/mobile-probe.js 375,812 http://localhost:8123/todo.html`)
+- SW bumped to `todo-v4` for this fix batch
+
+**Files touched:** `todo.html` (+favicon link), `index.html` (+favicon link), `css/todo.css` (`min-width: 0` on `.todo-input`, 44px theme-btn), `test/test-phase6.js` (new), `scripts/mobile-probe.js` (new), `sw.js` (cache bump)
+**Tests:** `npm test` — 96 checks (17 + 19 + 23 + 37), all green
+
 **Files touched:** `todo.html` (viewport meta), `css/todo.css` (mobile-first restructure, media queries, touch targets), `js/todo.js` (reorder buttons, fragment render), `sw.js` (cache bump)
 **Tests:** existing suites unchanged, plus 6 new `moveTodo` checks in `test-phase3.js` — `npm test` (59 checks) stays green
 

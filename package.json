@@ -4,11 +4,12 @@
     "private": true,
     "description": "Vanilla JS todo app with Supabase sync, PWA offline support and zero runtime dependencies",
     "scripts": {
-        "test": "node test/test-phase3.js && node test/test-phase4.js && node test/test-phase5.js",
+        "test": "node test/test-phase3.js && node test/test-phase4.js && node test/test-phase5.js && node test/test-phase6.js",
         "test:phase2": "node test/test-phase2.js",
         "test:phase3": "node test/test-phase3.js",
         "test:phase4": "node test/test-phase4.js",
         "test:phase5": "node test/test-phase5.js",
+        "test:phase6": "node test/test-phase6.js",
         "serve": "npx --yes serve ."
     },
     "engines": {

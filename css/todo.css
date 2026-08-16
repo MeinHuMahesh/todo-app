@@ -198,6 +198,7 @@ body {
 
 .todo-input {
     flex: 1;
+    min-width: 0;
     min-height: 48px;
     padding: 0 18px;
     border-radius: 14px;
@@ -1326,11 +1327,6 @@ body {
 
     .todo-title {
         font-size: 32px;
-    }
-
-    .theme-btn {
-        width: 40px;
-        height: 40px;
     }
 
     .todo-input {
