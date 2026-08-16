@@ -8,7 +8,8 @@ const path = require('path');
 function stubEl() {
     return {
         addEventListener() {}, appendChild() {}, focus() {}, select() {}, replaceWith() {},
-        setAttribute() {}, remove() {}, getAttribute() { return null; },
+        replaceChildren() {}, remove() {}, getAttribute() { return null; },
+        setAttribute() {},
         classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } },
         style: {}, dataset: {},
         querySelector() { return stubEl(); },
@@ -30,6 +31,7 @@ const sandbox = {
         querySelectorAll: () => [],
         addEventListener() {},
         createElement: () => stubEl(),
+        createDocumentFragment: () => stubEl(),
         head: { appendChild() {} }
     },
     window: {

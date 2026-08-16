@@ -7,11 +7,12 @@ const path = require('path');
 
 function stubEl() {
     return {
-        addEventListener() {}, appendChild() {}, focus() {}, select() {},
+        addEventListener() {}, appendChild() {}, focus() {}, select() {}, replaceChildren() {},
+        setAttribute() {},
         classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } },
         style: {}, dataset: {},
         querySelector() { return stubEl(); },
-        innerHTML: '', textContent: '', value: '', hidden: false, disabled: false, title: ''
+        innerHTML: '', textContent: '', value: '', hidden: false, disabled: false, title: '', tabIndex: 0
     };
 }
 
@@ -22,6 +23,7 @@ const sandbox = {
         querySelectorAll: () => [],
         addEventListener() {},
         createElement: () => stubEl(),
+        createDocumentFragment: () => stubEl(),
         head: { appendChild() {} }
     },
     window: {
@@ -52,7 +54,7 @@ globalThis.__test = {
     set searchQuery(v) { searchQuery = v; },
     get sortMode() { return sortMode; },
     set sortMode(v) { sortMode = v; },
-    getVisible
+    getVisible, moveTodo
 };
 `, sandbox);
 
@@ -120,6 +122,35 @@ function check(name, cond, extra) {
 
     S.searchQuery = 'zzz';
     check('search no match', S.getVisible().length === 0);
+
+    // Touch reorder (moveTodo) — works on position order, switches to manual sort
+    S.currentFilter = 'all';
+    S.tagFilter = null;
+    S.searchQuery = '';
+    const fresh = () => { S.todos = [
+        T({ id: 1, text: 'Alpha', position: 0 }),
+        T({ id: 2, text: 'Beta', position: 1 }),
+        T({ id: 3, text: 'Gamma', position: 2 })
+    ]; };
+
+    fresh(); S.sortMode = 'manual';
+    S.moveTodo(2, -1);
+    check('move up swaps positions', S.getVisible().map(t => t.id).join() === '2,1,3');
+
+    fresh(); S.sortMode = 'manual';
+    S.moveTodo(2, 1);
+    check('move down swaps positions', S.getVisible().map(t => t.id).join() === '1,3,2');
+
+    fresh(); S.sortMode = 'priority';
+    S.moveTodo(3, -1);
+    check('move auto-switches to manual sort', S.sortMode === 'manual');
+    check('move up in priority view still reorders', S.getVisible().map(t => t.id).join() === '1,3,2');
+
+    S.moveTodo(1, -1);
+    check('move up at top is a no-op', S.getVisible().map(t => t.id).join() === '1,3,2');
+
+    S.moveTodo(2, 1);
+    check('move down at bottom is a no-op', S.getVisible().map(t => t.id).join() === '1,3,2');
 
     console.log('\nResult: ' + pass + ' passed, ' + fail + ' failed');
     process.exit(fail ? 1 : 0);

@@ -23,7 +23,7 @@ function stubEl() {
         children: [], listeners: {},
         addEventListener(type, fn) { this.listeners[type] = fn; },
         appendChild(child) { this.children.push(child); },
-        setAttribute() {}, getAttribute() { return null; },
+        replaceChildren() {}, setAttribute() {}, getAttribute() { return null; },
         focus() {}, select() {}, replaceWith() {}, remove() {},
         classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } },
         style: {}, dataset: {},
@@ -45,6 +45,7 @@ const sandbox = {
         querySelectorAll: () => [],
         addEventListener() {},
         createElement: () => stubEl(),
+        createDocumentFragment: () => stubEl(),
         head: { appendChild() {} }
     },
     window: {

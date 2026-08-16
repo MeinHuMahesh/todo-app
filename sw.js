@@ -1,5 +1,5 @@
 // Service worker — bump VERSION whenever app files change to refresh the cache.
-const VERSION = 'todo-v2';
+const VERSION = 'todo-v3';
 
 const PRECACHE = [
     'todo.html',

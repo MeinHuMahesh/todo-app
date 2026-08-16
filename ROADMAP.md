@@ -109,7 +109,23 @@ Builds on the Phase 1 UI.
 
 ---
 
-## Phase 6 — Ideas (not yet scoped) ⬜
+## Phase 6 — Mobile-first styling & performance ✅
+
+**Delivered:**
+- **Mobile-first restructure**: base styles = phone (body `16px 12px`, card `24px 20px`, title 26px), `min-width: 768px` queries layer desktop on top (`48px 16px` body, `32px 28px` card, 32px title, compact inputs)
+- **Touch UX**: all text inputs 16px base (kills iOS auto-zoom on focus), 44px+ hit targets for icon/utility buttons at base (compact on fine pointers), `touch-action: manipulation` + transparent tap highlight
+- **Safe areas**: `env(safe-area-inset-*)` on body and toast, `viewport-fit=cover` meta, `100dvh` for mobile browser chrome
+- **Hover hygiene**: all hover-only effects moved behind `@media (hover: hover) and (pointer: fine)` (no stuck hover states on touch)
+- **Touch reorder**: ↑/↓ move buttons on each task, visible only on coarse pointers, wired into `reorderTodo()` — fills the HTML5 DnD gap on mobile
+- **Performance**: removed `background-attachment: fixed` (iOS repaint bug), backdrop blur 20px → 12px on small screens, `render()` now builds a `DocumentFragment` + single `replaceChildren()` (one reflow instead of per-item appends)
+- SW version bumped to `todo-v3` to refresh cached assets
+
+**Files touched:** `todo.html` (viewport meta), `css/todo.css` (mobile-first restructure, media queries, touch targets), `js/todo.js` (reorder buttons, fragment render), `sw.js` (cache bump)
+**Tests:** existing suites unchanged, plus 6 new `moveTodo` checks in `test-phase3.js` — `npm test` (59 checks) stays green
+
+---
+
+## Phase 7 — Ideas (not yet scoped) ⬜
 
 - Recurring tasks, reminders/notifications
 - Board/kanban view, calendar view

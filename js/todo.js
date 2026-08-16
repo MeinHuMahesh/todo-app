@@ -519,11 +519,9 @@ function dueBadge(todo) {
 
 function render() {
     const filtered = getVisible();
-    listEl.innerHTML = '';
-
-    filtered.forEach(todo => {
-        listEl.appendChild(createItem(todo));
-    });
+    const frag = document.createDocumentFragment();
+    filtered.forEach(todo => frag.appendChild(createItem(todo)));
+    listEl.replaceChildren(frag);
 
     emptyStateEl.classList.toggle('visible', filtered.length === 0);
     const emptyMsg = emptyStateEl.querySelector('p');
@@ -685,6 +683,22 @@ function createItem(todo) {
         render();
     });
     main.appendChild(expandBtn);
+
+    const moveUpBtn = document.createElement('button');
+    moveUpBtn.className = 'move-btn move-up';
+    moveUpBtn.textContent = '\u25B2';
+    moveUpBtn.title = 'Move up';
+    moveUpBtn.setAttribute('aria-label', 'Move ' + todo.text + ' up');
+    moveUpBtn.addEventListener('click', () => moveTodo(todo.id, -1));
+    main.appendChild(moveUpBtn);
+
+    const moveDownBtn = document.createElement('button');
+    moveDownBtn.className = 'move-btn move-down';
+    moveDownBtn.textContent = '\u25BC';
+    moveDownBtn.title = 'Move down';
+    moveDownBtn.setAttribute('aria-label', 'Move ' + todo.text + ' down');
+    moveDownBtn.addEventListener('click', () => moveTodo(todo.id, 1));
+    main.appendChild(moveDownBtn);
 
     const delBtn = document.createElement('button');
     delBtn.className = 'delete-btn';
@@ -850,6 +864,18 @@ function toggleTodo(id) {
         persist();
         render();
     }
+}
+
+function moveTodo(id, dir) {
+    if (sortMode !== 'manual') {
+        sortMode = 'manual';
+        sortSelect.value = 'manual';
+    }
+    const visible = getVisible();
+    const idx = visible.findIndex(t => t.id === id);
+    const target = visible[idx + dir];
+    if (idx === -1 || !target) return;
+    reorderTodo(id, target.id);
 }
 
 function reorderTodo(fromId, toId) {

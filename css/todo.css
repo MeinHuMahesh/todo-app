@@ -30,6 +30,11 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button, input, select, textarea, .todo-item {
+    touch-action: manipulation;
 }
 
 :focus-visible {
@@ -67,13 +72,17 @@
 
 body {
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: 48px 16px;
+    padding:
+        calc(16px + env(safe-area-inset-top))
+        calc(12px + env(safe-area-inset-right))
+        calc(16px + env(safe-area-inset-bottom))
+        calc(12px + env(safe-area-inset-left));
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: var(--bg-gradient);
-    background-attachment: fixed;
     transition: background 0.3s ease;
 }
 
@@ -81,11 +90,11 @@ body {
     width: 100%;
     max-width: 520px;
     background: rgba(var(--surface-rgb), 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(var(--border-rgb), 0.15);
-    border-radius: 24px;
-    padding: 32px 28px;
+    border-radius: 20px;
+    padding: 24px 20px;
     box-shadow: 0 25px 60px var(--shadow);
     animation: fadeInUp 0.5s ease;
 }
@@ -113,23 +122,23 @@ body {
 
 .theme-btn {
     flex-shrink: 0;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border: 1px solid rgba(var(--border-rgb), 0.15);
     border-radius: 12px;
     background: rgba(var(--surface-rgb), 0.08);
     font-size: 18px;
     cursor: pointer;
     transition: background 0.2s ease, transform 0.15s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .theme-btn:hover {
     background: rgba(var(--surface-rgb), 0.16);
     transform: translateY(-1px);
-}
+}}
 
 .todo-title {
-    font-size: 32px;
+    font-size: 26px;
     font-weight: 700;
     color: #ffffff;
     letter-spacing: -0.5px;
@@ -232,12 +241,12 @@ body {
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
     box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
     transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .add-btn:hover {
     transform: translateY(-2px);
     filter: brightness(1.1);
-}
+}}
 
 .add-btn:active {
     transform: translateY(0);
@@ -253,12 +262,12 @@ body {
     cursor: pointer;
     background: rgba(var(--surface-rgb), 0.1);
     transition: all 0.2s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .options-btn:hover {
     background: rgba(var(--surface-rgb), 0.16);
     color: #ffffff;
-}
+}}
 
 .options-btn.open {
     background: rgba(99, 102, 241, 0.3);
@@ -297,11 +306,11 @@ body {
     color: rgba(var(--text-rgb), 0.5);
     cursor: pointer;
     transition: all 0.2s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .prio-btn:hover {
     color: rgba(var(--text-rgb), 0.85);
-}
+}}
 
 .prio-btn[data-priority="low"].active { background: #10b981; color: #ffffff; }
 .prio-btn[data-priority="medium"].active { background: #f59e0b; color: #ffffff; }
@@ -311,14 +320,14 @@ body {
 .tag-input {
     flex: 1;
     min-width: 130px;
-    height: 40px;
+    height: 44px;
     padding: 0 12px;
     border-radius: 10px;
     border: 2px solid transparent;
     outline: none;
-    font-size: 13px;
+    font-size: 16px;
     background: rgba(var(--surface-rgb), 0.1);
-    color: #ffffff;
+    color: rgba(var(--text-rgb), 0.92);
     transition: border-color 0.2s ease, background 0.2s ease;
 }
 
@@ -345,25 +354,27 @@ body {
 
 .filters {
     display: flex;
-    gap: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
     margin-bottom: 16px;
 }
 
 .toolbar {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 12px;
 }
 
 .search-input {
-    flex: 1;
+    flex: 1 1 100%;
     min-width: 0;
-    height: 40px;
+    height: 44px;
     padding: 0 14px;
     border-radius: 12px;
     border: 2px solid transparent;
     outline: none;
-    font-size: 13px;
+    font-size: 16px;
     background: rgba(var(--surface-rgb), 0.1);
     color: #ffffff;
     transition: border-color 0.2s ease, background 0.2s ease;
@@ -379,12 +390,13 @@ body {
 }
 
 .sort-select {
-    height: 40px;
+    flex: 1;
+    height: 44px;
     padding: 0 10px;
     border-radius: 12px;
     border: 2px solid transparent;
     outline: none;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
     background: rgba(var(--surface-rgb), 0.1);
     color: #ffffff;
@@ -422,16 +434,17 @@ body {
     padding: 4px 8px;
     border-radius: 6px;
     transition: color 0.2s ease, background 0.2s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .tag-filter-clear:hover {
     color: #f87171;
     background: rgba(248, 113, 113, 0.1);
-}
+}}
 
 .filter-btn {
-    flex: 1;
-    padding: 8px 0;
+    flex: 1 1 auto;
+    min-width: 64px;
+    padding: 10px 8px;
     border: none;
     border-radius: 10px;
     font-size: 13px;
@@ -440,11 +453,11 @@ body {
     background: transparent;
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .filter-btn:hover {
     color: rgba(var(--text-rgb), 0.85);
-}
+}}
 
 .filter-btn.active {
     background: rgba(var(--surface-rgb), 0.14);
@@ -475,12 +488,12 @@ body {
 @keyframes slideIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .todo-item:hover {
     background: rgba(var(--surface-rgb), 0.12);
     border-color: rgba(var(--border-rgb), 0.18);
-}
+}}
 
 .todo-item.selected {
     border-color: rgba(129, 140, 248, 0.8);
@@ -614,12 +627,12 @@ body {
     display: flex;
     gap: 4px;
     flex-wrap: wrap;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .tag-chip:hover {
     background: rgba(129, 140, 248, 0.35);
     color: #c7d2fe;
-}
+}}
 
 .tag-chip:active {
     transform: scale(0.95);
@@ -639,37 +652,45 @@ body {
 
 .expand-btn {
     flex-shrink: 0;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     background: none;
     font-size: 12px;
     color: rgba(var(--text-rgb), 0.35);
     cursor: pointer;
-    padding: 4px 6px;
     border-radius: 8px;
     transition: color 0.2s ease, background 0.2s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .expand-btn:hover {
     color: #ffffff;
     background: rgba(var(--surface-rgb), 0.1);
-}
+}}
 
 .delete-btn {
     flex-shrink: 0;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     background: none;
     font-size: 18px;
     color: rgba(var(--text-rgb), 0.3);
     cursor: pointer;
-    padding: 4px 6px;
     border-radius: 8px;
     transition: color 0.2s ease, background 0.2s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .delete-btn:hover {
     color: #f87171;
     background: rgba(248, 113, 113, 0.12);
-}
+}}
 
 .todo-detail {
     display: none;
@@ -740,19 +761,23 @@ body {
 
 .subtask-delete {
     flex-shrink: 0;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     background: none;
     font-size: 14px;
     color: rgba(var(--text-rgb), 0.3);
     cursor: pointer;
-    padding: 2px 4px;
     border-radius: 6px;
     transition: color 0.2s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .subtask-delete:hover {
     color: #f87171;
-}
+}}
 
 .subtask-add-row {
     display: flex;
@@ -762,14 +787,14 @@ body {
 
 .subtask-input {
     flex: 1;
-    height: 34px;
+    height: 44px;
     padding: 0 10px;
     border-radius: 8px;
     border: 2px solid transparent;
     outline: none;
     background: rgba(var(--surface-rgb), 0.08);
-    color: #ffffff;
-    font-size: 13px;
+    color: rgba(var(--text-rgb), 0.92);
+    font-size: 16px;
     transition: border-color 0.2s ease;
 }
 
@@ -783,7 +808,8 @@ body {
 
 .subtask-add {
     border: none;
-    padding: 0 12px;
+    min-height: 44px;
+    padding: 0 16px;
     border-radius: 8px;
     background: rgba(99, 102, 241, 0.8);
     color: #ffffff;
@@ -791,22 +817,22 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .subtask-add:hover {
     background: #6366f1;
-}
+}}
 
 .notes-input {
     width: 100%;
     min-height: 56px;
-    padding: 8px 10px;
+    padding: 10px;
     border-radius: 8px;
     border: 2px solid transparent;
     outline: none;
     background: rgba(var(--surface-rgb), 0.08);
-    color: #ffffff;
-    font-size: 13px;
+    color: rgba(var(--text-rgb), 0.92);
+    font-size: 16px;
     font-family: inherit;
     resize: vertical;
     transition: border-color 0.2s ease;
@@ -881,15 +907,16 @@ body {
     font-weight: 600;
     color: rgba(var(--text-rgb), 0.5);
     cursor: pointer;
-    padding: 6px 10px;
+    min-height: 44px;
+    padding: 0 10px;
     border-radius: 8px;
     transition: color 0.2s ease, background 0.2s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .clear-btn:hover {
     color: #f87171;
     background: rgba(248, 113, 113, 0.1);
-}
+}}
 
 .user-row {
     display: flex;
@@ -910,17 +937,18 @@ body {
     color: rgba(var(--text-rgb), 0.7);
     font-size: 12px;
     font-weight: 600;
-    padding: 5px 12px;
+    min-height: 44px;
+    padding: 0 14px;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .signout-btn:hover {
     background: rgba(248, 113, 113, 0.15);
     border-color: rgba(248, 113, 113, 0.4);
     color: #fca5a5;
-}
+}}
 
 .auth-overlay {
     position: fixed;
@@ -947,8 +975,8 @@ body {
 .auth-card {
     width: 100%;
     max-width: 360px;
-    padding: 36px 32px;
-    border-radius: 24px;
+    padding: 28px 20px;
+    border-radius: 20px;
     background: rgba(var(--surface-rgb), 0.08);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -979,14 +1007,14 @@ body {
 }
 
 .auth-input {
-    height: 44px;
+    height: 48px;
     padding: 0 14px;
     border-radius: 12px;
     border: 2px solid transparent;
     outline: none;
-    font-size: 14px;
+    font-size: 16px;
     background: rgba(var(--surface-rgb), 0.1);
-    color: #ffffff;
+    color: rgba(var(--text-rgb), 0.92);
     transition: border-color 0.2s ease, background 0.2s ease;
 }
 
@@ -1010,12 +1038,12 @@ body {
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
     box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
     transition: transform 0.15s ease, filter 0.15s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .auth-btn:hover {
     transform: translateY(-1px);
     filter: brightness(1.1);
-}
+}}
 
 .auth-btn:active {
     transform: translateY(0);
@@ -1032,12 +1060,12 @@ body {
     background: rgba(var(--surface-rgb), 0.06);
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .guest-btn:hover {
     background: rgba(var(--surface-rgb), 0.12);
     color: #ffffff;
-}
+}}
 
 .auth-error {
     min-height: 18px;
@@ -1058,11 +1086,11 @@ body {
     color: #a5b4fc;
     text-decoration: none;
     font-weight: 600;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .auth-switch a:hover {
     text-decoration: underline;
-}
+}}
 
 .sync-banner {
     position: fixed;
@@ -1102,7 +1130,7 @@ body {
 
 .toast-area {
     position: fixed;
-    bottom: 24px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
     z-index: 300;
@@ -1159,11 +1187,11 @@ body {
     background: var(--accent-grad);
     cursor: pointer;
     transition: filter 0.15s ease;
-}
+}@media (hover: hover) and (pointer: fine) {
 
 .toast-action:hover {
     filter: brightness(1.1);
-}
+}}
 
 [data-theme="light"] .todo-container,
 [data-theme="light"] .auth-card {
@@ -1174,12 +1202,12 @@ body {
 [data-theme="light"] .todo-item {
     background: rgba(255, 255, 255, 0.7);
     border-color: rgba(15, 23, 42, 0.12);
-}
+}@media (hover: hover) and (pointer: fine) {
 
 [data-theme="light"] .todo-item:hover {
     background: rgba(255, 255, 255, 0.9);
     border-color: rgba(15, 23, 42, 0.2);
-}
+}}
 
 [data-theme="light"] .todo-input,
 [data-theme="light"] .search-input,
@@ -1221,4 +1249,168 @@ body {
 [data-theme="light"] .loading::after {
     border-color: rgba(15, 23, 42, 0.3);
     border-top-color: var(--accent);
+}
+
+/* Touch reorder buttons — hidden by default, shown on coarse pointers only */
+.move-btn {
+    flex-shrink: 0;
+    display: none;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    font-size: 12px;
+    color: rgba(var(--text-rgb), 0.35);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+@media (pointer: coarse) {
+    .move-btn {
+        display: inline-flex;
+    }
+
+    .todo-main {
+        flex-wrap: wrap;
+        row-gap: 6px;
+    }
+
+    .todo-text {
+        flex: 1 1 100%;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .move-btn:hover {
+        color: #ffffff;
+        background: rgba(var(--surface-rgb), 0.1);
+    }
+}
+
+@media (pointer: coarse) {
+    .theme-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .add-btn {
+        min-width: 88px;
+    }
+
+    .todo-checkbox {
+        width: 24px;
+        height: 24px;
+    }
+
+    .subtask-checkbox {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+/* Desktop: lay desktop-first sizes back on top of the mobile base */
+@media (min-width: 768px) {
+    body {
+        padding: 48px 16px;
+    }
+
+    .todo-container {
+        padding: 32px 28px;
+        border-radius: 24px;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    .todo-title {
+        font-size: 32px;
+    }
+
+    .theme-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .todo-input {
+        font-size: 16px;
+    }
+
+    .date-input,
+    .tag-input,
+    .search-input,
+    .sort-select {
+        font-size: 13px;
+        height: 40px;
+    }
+
+    .toolbar {
+        flex-wrap: nowrap;
+    }
+
+    .search-input {
+        flex: 1;
+    }
+
+    .sort-select {
+        flex: 0 0 auto;
+    }
+
+    .filters {
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .filter-btn {
+        flex: 1;
+        min-width: 0;
+        padding: 8px 0;
+    }
+
+    .expand-btn,
+    .delete-btn {
+        min-width: 0;
+        min-height: 0;
+        padding: 4px 6px;
+    }
+
+    .subtask-delete {
+        min-width: 0;
+        min-height: 0;
+        padding: 2px 4px;
+    }
+
+    .subtask-input,
+    .notes-input {
+        font-size: 13px;
+    }
+
+    .subtask-input {
+        height: 34px;
+    }
+
+    .subtask-add {
+        min-height: 34px;
+    }
+
+    .auth-input {
+        height: 44px;
+        font-size: 14px;
+    }
+
+    .auth-card {
+        padding: 36px 32px;
+        border-radius: 24px;
+    }
+
+    .clear-btn {
+        min-height: 0;
+        padding: 6px 10px;
+    }
+
+    .signout-btn {
+        min-height: 0;
+        padding: 5px 12px;
+    }
 }
